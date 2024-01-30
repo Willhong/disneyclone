@@ -6,31 +6,31 @@ const Category = () => {
     <Container>
       <Wrap>
         <img src="/images/viewers-disney.png" alt="disney" />
-        <video autoPlay={true} loop={true} playsInline={true}>
+        <video autoPlay={true} loop={true} playsInline={true} muted={true}>
           <source src="/videos/disney.mp4" type="video/mp4" />
         </video>
       </Wrap>
       <Wrap>
         <img src="/images/viewers-marvel.png" alt="marvel" />
-        <video autoPlay={true} loop={true} playsInline={true}>
+        <video autoPlay={true} loop={true} playsInline={true} muted={true}>
           <source src="/videos/marvel.mp4" type="video/mp4" />
         </video>
       </Wrap>
       <Wrap>
         <img src="/images/viewers-pixar.png" alt="pixar" />
-        <video autoPlay={true} loop={true} playsInline={true}>
+        <video autoPlay={true} loop={true} playsInline={true} muted={true}>
           <source src="/videos/pixar.mp4" type="video/mp4" />
         </video>
       </Wrap>
       <Wrap>
         <img src="/images/viewers-starwars.png" alt="starwars" />
-        <video autoPlay={true} loop={true} playsInline={true}>
+        <video autoPlay={true} loop={true} playsInline={true} muted={true}>
           <source src="/videos/star-wars.mp4" type="video/mp4" />
         </video>
       </Wrap>
       <Wrap>
         <img src="/images/viewers-national.png" alt="national" />
-        <video autoPlay={true} loop={true} playsInline={true}>
+        <video autoPlay={true} loop={true} playsInline={true} muted={true}>
           <source src="/videos/national-geographic.mp4" type="video/mp4" />
         </video>
       </Wrap>
