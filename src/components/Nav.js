@@ -8,18 +8,20 @@ import {
   onAuthStateChanged,
   signOut,
 } from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { removeUser, setUser } from "../store/userSlice";
 
 const Nav = () => {
-
-  const initialUserData = JSON.parse(localStorage.getItem("userData"));
+  // const initialUserData = JSON.parse(localStorage.getItem("userData"));
   const [show, setShow] = useState(false);
   const { pathname } = useLocation();
   const [searchValue, setsearchValue] = useState("");
   const navigate = useNavigate();
   const auth = getAuth();
   const provider = new GoogleAuthProvider();
-  const [userData, setUserData] = useState(initialUserData || {});
-
+  // const [userData, setUserData] = useState(initialUserData || {});
+  const userData = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -59,14 +61,23 @@ const Nav = () => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         // The signed-in user info.
-        
+
         const user = result.user;
-        setUserData(user);
-        localStorage.setItem("userData", JSON.stringify(result.user));
+        // setUserData(user);
+
+        dispatch(
+          setUser({
+            id: result.user.uid,
+            email: result.user.email,
+            displayName: result.user.displayName,
+            photoURL: result.user.photoURL,
+          })
+        );
+        // localStorage.setItem("userData", JSON.stringify(result.user));
         console.log("user", user);
 
         navigate("/main");
-        
+
         // IdP data available using getAdditionalUserInfo(result)
         // ...
       })
@@ -83,19 +94,18 @@ const Nav = () => {
   };
 
   const handleSignOut = () => {
-    const auth = getAuth();
     signOut(auth)
       .then(() => {
-        setUserData({});
-        localStorage.removeItem("userData");
+        dispatch(removeUser());
+
+        // setUserData({});
+        // localStorage.removeItem("userData");
         navigate("/");
       })
       .catch((error) => {
         // An error happened.
       });
-
-
-  }
+  };
 
   const handleChange = (e) => {
     setsearchValue(e.target.value);
@@ -116,21 +126,19 @@ const Nav = () => {
         <Login onClick={handleAuth}>Login</Login>
       ) : (
         <>
-        <Input
-          value={searchValue}
-          onChange={handleChange}
-          className="nav__input"
-          type="text"
-          placeholder="검색해주세요"
-        />
-        <SignOut>
-          <UserImg src={userData.photoURL} alt={userData.displayName} />
-          <DropDown
-            onClick={handleSignOut}
-          >
-            <span>Sign Out</span>
-          </DropDown>
-        </SignOut>
+          <Input
+            value={searchValue}
+            onChange={handleChange}
+            className="nav__input"
+            type="text"
+            placeholder="검색해주세요"
+          />
+          <SignOut>
+            <UserImg src={userData.photoURL} alt={userData.displayName} />
+            <DropDown onClick={handleSignOut}>
+              <span>Sign Out</span>
+            </DropDown>
+          </SignOut>
         </>
       )}
     </NavWrapper>
@@ -139,49 +147,47 @@ const Nav = () => {
 
 export default Nav;
 
-
-
 const UserImg = styled.img`
-border-radius: 50%;
-width: 100%;  
-height: 100%;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
 `;
 
 const DropDown = styled.div`
-position: absolute;
-top: 48px;
-right: 0px;
-background: rgb(19, 19, 19);
-border: 1px solid rgba(151, 151, 151, 0.34);
-border-radius: 4px;
-box-shadow: rgb(0 0 0 / 50%) 0px 0px 18px 0px;
-padding: 10px;
-font-size: 14px;
-letter-spacing: 3px;
-width: 100px;
-opacity: 0;
+  position: absolute;
+  top: 48px;
+  right: 0px;
+  background: rgb(19, 19, 19);
+  border: 1px solid rgba(151, 151, 151, 0.34);
+  border-radius: 4px;
+  box-shadow: rgb(0 0 0 / 50%) 0px 0px 18px 0px;
+  padding: 10px;
+  font-size: 14px;
+  letter-spacing: 3px;
+  width: 100px;
+  opacity: 0;
 
-&:hover {
-  background: white;
-  color: black;
-  opacity: 1;
-}
+  &:hover {
+    background: white;
+    color: black;
+    opacity: 1;
+  }
 `;
 const SignOut = styled.div`
-position: relative;
-height: 48px;
-width: 48px;
-display: flex;
-cursor: pointer;
-align-items: center;
-justify-content: center;
+  position: relative;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
 
-&:hover {
-  ${DropDown} {
-    opacity: 1;
-    transition-duration: 1s;
+  &:hover {
+    ${DropDown} {
+      opacity: 1;
+      transition-duration: 1s;
+    }
   }
-}
 `;
 const Login = styled.a`
   background-color: rgba(0, 0, 0, 0.6);
